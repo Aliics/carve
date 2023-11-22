@@ -1,0 +1,58 @@
+function printName(name)
+	print("My name is:")
+	print(name)
+end
+
+function namesMatch?(name1, name2)
+	equals?(name1, name2)
+end
+
+printName("Alex")
+printName("Ollie")
+
+if true then
+	print("Hello, world!")
+end
+
+if false then
+	print("Goodbye, world!")
+end
+
+if namesMatch?("Ollie", "Ollie") then
+	print("Mr. Tot!")
+end
+
+if not namesMatch?("Alex", "alex") then
+	print("Who?")
+end
+
+if namesMatch?("Lari", "Lari") then
+	print("Match!")
+end
+
+friend = concat("Ollie", " The Man")
+print(friend)
+
+if contains?(friend, "The Man") then
+	print("It's him!")
+end
+
+if greaterThan?(plus(10, 1), 10) then
+    print("Wow! 11 is greater than 10")
+end
+
+if equals?(10, 11) then
+    print("Math is broken")
+else
+    print("Ok, no math still works")
+end
+
+function life(truth)
+    if truth then
+        42
+    else
+        43
+    end
+end
+
+print(life(true))

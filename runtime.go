@@ -20,57 +20,25 @@ func defaultRuntime() *runtime {
 					[]value{varValue{"value"}},
 				)},
 			},
-			"equals?": {
-				[]string{"a", "b"},
-				[]instruct{runBIFInstruct(
-					bifEquals,
-					[]value{varValue{"a"}, varValue{"b"}},
-				)},
-			},
-			"greaterThan?": {
-				[]string{"a", "b"},
-				[]instruct{runBIFInstruct(
-					bifGreaterThan,
-					[]value{varValue{"a"}, varValue{"b"}},
-				)},
-			},
-			"lessThan?": {
-				[]string{"a", "b"},
-				[]instruct{runBIFInstruct(
-					bifLessThan,
-					[]value{varValue{"a"}, varValue{"b"}},
-				)},
-			},
-			"contains?": {
-				[]string{"a", "b"},
-				[]instruct{runBIFInstruct(
-					bifContains,
-					[]value{varValue{"a"}, varValue{"b"}},
-				)},
-			},
-			"concat": {
-				[]string{"a", "b"},
-				[]instruct{runBIFInstruct(
-					bifConcat,
-					[]value{varValue{"a"}, varValue{"b"}},
-				)},
-			},
-			"plus": {
-				[]string{"a", "b"},
-				[]instruct{runBIFInstruct(
-					bifPlus,
-					[]value{varValue{"a"}, varValue{"b"}},
-				)},
-			},
-			"minus": {
-				[]string{"a", "b"},
-				[]instruct{runBIFInstruct(
-					bifMinus,
-					[]value{varValue{"a"}, varValue{"b"}},
-				)},
-			},
+			"equals?":      makeCmpFunc(bifEquals),
+			"greaterThan?": makeCmpFunc(bifGreaterThan),
+			"lessThan?":    makeCmpFunc(bifLessThan),
+			"contains?":    makeCmpFunc(bifContains),
+			"concat":       makeCmpFunc(bifConcat),
+			"plus":         makeCmpFunc(bifPlus),
+			"minus":        makeCmpFunc(bifMinus),
 		},
 		make(map[string]value),
+	}
+}
+
+func makeCmpFunc(bif bif) funcDef {
+	return funcDef{
+		[]string{"a", "b"},
+		[]instruct{runBIFInstruct(
+			bif,
+			[]value{varValue{"a"}, varValue{"b"}},
+		)},
 	}
 }
 

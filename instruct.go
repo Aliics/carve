@@ -28,15 +28,28 @@ func invokeFuncInstruct(name string, args []instruct) instruct {
 			)
 		}
 
-		for i, name := range def.paramNames {
+		originStackSize := len(r.varDefs)
+		for i, p := range def.paramNames {
 			v, err := args[i](r)
 			if err != nil {
 				return nil, err
 			}
-			r.varDefs[name] = v
+
+			val, err := v.unwrap(r)
+			if err != nil {
+				return nil, err
+			}
+			r.varDefs = append(r.varDefs, varDef{p, val, def.level})
 		}
 
-		return exec(r, def.instructs)
+		origin := r.level
+		r.level = def.level
+		output, err := exec(r, def.instructs)
+		r.level = origin
+
+		r.varDefs = r.varDefs[:originStackSize]
+
+		return output, err
 	}
 }
 
@@ -51,18 +64,28 @@ func evaluateIfInstruct(
 			return nil, err
 		}
 
-		boolValue, ok := cond.unwrap(r).(boolValue)
+		val, err := cond.unwrap(r)
+		if err != nil {
+			return nil, err
+		}
+
+		boolValue, ok := val.(boolValue)
 		if !ok {
 			return nil, errors.New("condition expression was not a bool")
 		}
 
+		originStackSize := len(r.varDefs)
+
+		var output value
 		if boolValue {
-			return exec(r, ifInstructs)
+			output, err = exec(r, ifInstructs)
 		} else if len(elseInstructs) > 0 {
-			return exec(r, elseInstructs)
+			output, err = exec(r, elseInstructs)
 		}
 
-		return nil, nil
+		r.varDefs = r.varDefs[:originStackSize]
+
+		return output, err
 	}
 }
 
@@ -73,7 +96,7 @@ func assignVarInstruct(name string, i instruct) instruct {
 			return nil, err
 		}
 
-		r.varDefs[name] = v
+		r.varDefs = append(r.varDefs, varDef{name, v, r.level})
 
 		return nil, nil
 	}

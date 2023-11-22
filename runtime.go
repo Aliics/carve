@@ -3,22 +3,31 @@ package main
 type funcDef struct {
 	paramNames []string
 	instructs  []instruct
+	level      int
+}
+
+type varDef struct {
+	name  string
+	value value
+	level int
 }
 
 type runtime struct {
 	funcDefs map[string]funcDef
-	varDefs  map[string]value
+	varDefs  []varDef
+	level    int
 }
 
 func defaultRuntime() *runtime {
 	return &runtime{
-		map[string]funcDef{
+		funcDefs: map[string]funcDef{
 			"print": {
 				[]string{"value"},
 				[]instruct{runBIFInstruct(
 					bifPrint,
 					[]value{varValue{"value"}},
 				)},
+				0,
 			},
 			"equals?":      makeCmpFunc(bifEquals),
 			"greaterThan?": makeCmpFunc(bifGreaterThan),
@@ -28,7 +37,6 @@ func defaultRuntime() *runtime {
 			"plus":         makeCmpFunc(bifPlus),
 			"minus":        makeCmpFunc(bifMinus),
 		},
-		make(map[string]value),
 	}
 }
 
@@ -39,6 +47,7 @@ func makeCmpFunc(bif bif) funcDef {
 			bif,
 			[]value{varValue{"a"}, varValue{"b"}},
 		)},
+		0,
 	}
 }
 

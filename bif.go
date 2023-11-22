@@ -97,8 +97,15 @@ func ensureTwoSameType(r *runtime, args []value) (first, second value, err error
 		return nil, nil, errors.New("2 arguments expected for equals")
 	}
 
-	first = args[0].unwrap(r)
-	second = args[1].unwrap(r)
+	first, err = args[0].unwrap(r)
+	if err != nil {
+		return nil, nil, err
+	}
+	second, err = args[1].unwrap(r)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	if reflect.TypeOf(first) != reflect.TypeOf(second) {
 		return nil, nil, fmt.Errorf(
 			"cannot compare %s to %v",
@@ -117,13 +124,21 @@ func ensureTwoOfType[V value](r *runtime, args []value) (first, second V, err er
 
 	var ok bool
 
-	first, ok = args[0].unwrap(r).(V)
+	val, err := args[0].unwrap(r)
+	if err != nil {
+		return
+	}
+	first, ok = val.(V)
 	if !ok {
 		err = fmt.Errorf("first argument must be a %T", first)
 		return
 	}
 
-	second, ok = args[1].unwrap(r).(V)
+	val, err = args[1].unwrap(r)
+	if err != nil {
+		return
+	}
+	second, ok = val.(V)
 	if !ok {
 		err = fmt.Errorf("second argument must be a %T", second)
 		return

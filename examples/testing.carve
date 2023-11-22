@@ -4,7 +4,12 @@ function printName(name)
 end
 
 function namesMatch?(name1, name2)
+    -- return is not required, the last expr is returned.
 	equals?(name1, name2)
+end
+
+if true then
+    foo = 123
 end
 
 printName("Alex")
@@ -48,6 +53,9 @@ else
 end
 
 function life(truth)
+    printName("lol")
+
+    -- if statements also return their last expr.
     if truth then
         42
     else
@@ -56,3 +64,14 @@ function life(truth)
 end
 
 print(life(true))
+
+function repeat(s, n)
+    if equals?(n, 1) then
+        s
+    else
+        tail = repeat(s, minus(n, 1))
+        concat(s, concat(", ", tail))
+    end
+end
+
+print(repeat("ollie is the best", 3))

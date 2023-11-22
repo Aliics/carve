@@ -174,7 +174,7 @@ func parseFuncDef(
 		return nil, -1, err
 	}
 
-	def := funcDef{paramNames, funcBody}
+	def := funcDef{paramNames, funcBody, 1}
 	instructs = append(
 		instructs,
 		defineFuncInstruct(funcName, def),

@@ -17,7 +17,7 @@ type varValue struct {
 func (v varValue) show(r *runtime) string {
 	unwrap, err := v.unwrap(r)
 	if err != nil {
-		panic(err)
+		return "null"
 	}
 	return unwrap.show(r)
 }
